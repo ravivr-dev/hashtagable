@@ -24,10 +24,14 @@ class _MyAppState extends State<MyApp> {
               children: <Widget>[
                 /// Tagged text only to be shown
                 HashTagText(
-                  text: "#Welcome to #hashtagable\n This is #ReadOnlyText",
+                  text:
+                      "#Welcome to #hashtagable\n This is #ReadOnlyText https://example.com and another link http://example.org",
                   basicStyle: TextStyle(fontSize: 22, color: Colors.black),
                   decoratedStyle: TextStyle(fontSize: 22, color: Colors.red),
                   textAlign: TextAlign.center,
+                  linkCallback: (val) {
+                    print(val);
+                  },
                   onTap: (text) {
                     print(text);
                   },

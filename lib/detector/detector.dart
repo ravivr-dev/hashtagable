@@ -134,4 +134,21 @@ class Detector {
 
     return emojiFilteredResult;
   }
+
+  List<String> extractClickableLinks(String text) {
+    // Regular expression to match URLs
+    RegExp regex = RegExp(
+        r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+');
+
+    // Find all matches in the text
+    Iterable<RegExpMatch> matches = regex.allMatches(text);
+
+    // Extract links from matches
+    List<String> links = [];
+    for (RegExpMatch match in matches) {
+      links.add(match.group(0)!);
+    }
+
+    return links;
+  }
 }

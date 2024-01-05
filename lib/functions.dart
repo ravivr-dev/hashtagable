@@ -80,3 +80,96 @@ TextSpan getHashTagTextSpan({
     return TextSpan(children: span);
   }
 }
+
+TextSpan getHashtagAndLinks({
+  required TextStyle decoratedStyle,
+  required TextStyle basicStyle,
+  required String source,
+  Function(String)? onTap,
+  Function(String?)? linkCallback,
+  bool decorateAtSign = false,
+}) {
+  final tagsResult = getHashTagTextSpan(
+    basicStyle: basicStyle,
+    decoratedStyle: decoratedStyle,
+    source: source,
+    decorateAtSign: decorateAtSign,
+    onTap: onTap,
+  );
+
+  final linksResult = replaceLinks(
+    tagsResult,
+    linkCallback,
+  );
+
+  print(linksResult);
+
+  return linksResult;
+}
+
+TextSpan replaceLinks(
+  TextSpan textSpan,
+  Function(String?)? linkCallback,
+) {
+  // Regular expression to match URLs
+  final RegExp regex = RegExp(
+      r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+');
+
+  // Recursive function to replace links within TextSpan
+  TextSpan processTextSpan(
+    TextSpan span,
+  ) {
+    List<TextSpan> textSpans = [];
+
+    if (span.text != null) {
+      List<Match> matches = regex.allMatches(span.text ?? '').toList();
+      int currentIndex = 0;
+
+      for (Match match in matches) {
+        // Add the non-link text
+        if (match.start > currentIndex) {
+          textSpans.add(TextSpan(
+            text: span.text?.substring(currentIndex, match.start),
+            style: span.style,
+          ));
+        }
+
+        // Add the link with a custom style
+        textSpans.add(TextSpan(
+          text: match.group(0),
+          style: TextStyle(
+            color: Colors.blue, // You can customize the link color
+            decoration: TextDecoration.underline,
+          ),
+          recognizer: TapGestureRecognizer()
+            ..onTap = () {
+              if (linkCallback != null) {
+                linkCallback(match.group(0));
+              }
+            },
+        ));
+
+        currentIndex = match.end;
+      }
+
+      // Add any remaining non-link text
+      if (currentIndex < (span.text?.length ?? 0)) {
+        textSpans.add(TextSpan(
+          text: span.text?.substring(currentIndex),
+          style: span.style,
+        ));
+      }
+    }
+
+    // Recursively process children
+    if (span.children != null) {
+      for (TextSpan childSpan in span.children as List<TextSpan>) {
+        textSpans.add(processTextSpan(childSpan));
+      }
+    }
+
+    return TextSpan(children: textSpans);
+  }
+
+  return processTextSpan(textSpan);
+}

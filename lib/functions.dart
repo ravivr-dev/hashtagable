@@ -102,7 +102,6 @@ TextSpan getHashtagAndLinks({
     linkCallback,
   );
 
-  // final result = replaceTextSpan(tagsResult, linksResult);
   return linksResult;
 }
 
@@ -173,38 +172,4 @@ TextSpan replaceLinks(
   }
 
   return processTextSpan(textSpan);
-}
-
-TextSpan replaceTextSpan(TextSpan original, TextSpan replacement) {
-  if (original.text == replacement.text) {
-    // If the text values match, replace the style and children
-    return TextSpan(
-      text: replacement.text,
-      style: replacement.style ?? original.style,
-      children: replacement.children != null
-          ? List.generate(
-              replacement.children!.length,
-              (index) => replaceTextSpan(
-                original.children![index] as TextSpan,
-                replacement.children![index] as TextSpan,
-              ),
-            )
-          : original.children,
-    );
-  } else {
-    // If the text values don't match, keep the original TextSpan
-    return TextSpan(
-      text: original.text,
-      style: original.style,
-      children: original.children != null
-          ? List.generate(
-              original.children!.length,
-              (index) => replaceTextSpan(
-                original.children![index] as TextSpan,
-                replacement.children?[index] as TextSpan,
-              ),
-            )
-          : null,
-    );
-  }
 }

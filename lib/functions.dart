@@ -100,6 +100,7 @@ TextSpan getHashtagAndLinks({
   final linksResult = replaceLinks(
     tagsResult,
     linkCallback,
+    decoratedStyle,
   );
 
   return linksResult;
@@ -108,6 +109,7 @@ TextSpan getHashtagAndLinks({
 TextSpan replaceLinks(
   TextSpan textSpan,
   Function(String?)? linkCallback,
+  final TextStyle decoratedStyle,
 ) {
   // Regular expression to match URLs
   final RegExp regex = RegExp(
@@ -136,7 +138,7 @@ TextSpan replaceLinks(
         // Add the link with a custom style
         textSpans.add(TextSpan(
           text: match.group(0),
-          style: span.style,
+          style: decoratedStyle,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
               if (linkCallback != null) {

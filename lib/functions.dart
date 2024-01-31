@@ -136,10 +136,7 @@ TextSpan replaceLinks(
         // Add the link with a custom style
         textSpans.add(TextSpan(
           text: match.group(0),
-          style: TextStyle(
-            color: Colors.blue, // You can customize the link color
-            decoration: TextDecoration.underline,
-          ),
+          style: span.style,
           recognizer: TapGestureRecognizer()
             ..onTap = () {
               if (linkCallback != null) {
